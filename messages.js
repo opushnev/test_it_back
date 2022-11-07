@@ -2,13 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.json({ extended: false })
 const router = express.Router();
+const { Op } = require('sequelize')
 const Messages = require('./msg.model')
 
-router.use(function log_use(req, res, next) {
-    console.log(Date.now())
-    next();
-})
-
+//ПОЛУЧЕНИЕ ВСЕХ СООБЩЕНИЙ
 router.route('/')
     .get((req, res) => {
         Messages.findAll({
@@ -22,25 +19,36 @@ router.route('/')
                 res.json({});
             })
     })
-
+    // ПОИСК ПО СООБЩЕНИЯМ
 router.route('/:id')
     .get((req, res) => {
         let d = req.params.id
-        console.log('MESSAGE NUMBER');
-        res.send(`MESSAGE NUMBER ${d}`);
+        console.log(d);
+        Messages.findAll({
+                where: {
+                    body: {
+                        [Op.iLike]: `%${d}%`
+                    }
+                }
+            })
+            .then(data => res.json(data))
+            .catch((error) => {
+                res.json({});
+            })
     })
+
+// ЗАПИСЬ СООБЩЕНИЯ В БАЗУ ДАННЫХ
 router.route('/')
     .post(urlencodedParser, (req, res) => {
-        // console.log(req);
         let { msg } = req.body;
         Messages.create({
             body: msg
         }).then(res => {
-            console.log(res)
+            res.send(`OK`);
         }).catch((error) => {
             console.error('Failed to create a new record : ', error);
+            res.send(`ERROR`);
         });
-        res.send(`MESSAGE ADD ${msg}`);
     })
 
 module.exports = router;
