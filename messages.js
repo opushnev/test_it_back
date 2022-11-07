@@ -23,7 +23,6 @@ router.route('/')
 router.route('/:id')
     .get((req, res) => {
         let d = req.params.id
-        console.log(d);
         Messages.findAll({
                 where: {
                     body: {
