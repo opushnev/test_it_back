@@ -44,7 +44,7 @@ router.route('/')
         Messages.create({
             body: msg
         }).then(res => {
-            res.send({});
+            res.json({});
         }).catch((error) => {
             console.error('Failed to create a new record : ', error);
             res.json({});
