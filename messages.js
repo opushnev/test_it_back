@@ -11,7 +11,7 @@ router.route('/')
         Messages.findAll({
                 attributes: ['body'],
                 order: [
-                    ['createdAt', 'DESC']
+                    ['createdAt', 'ASC']
                 ]
             })
             .then(data => res.json(data))
@@ -44,10 +44,10 @@ router.route('/')
         Messages.create({
             body: msg
         }).then(res => {
-            res.send(`OK`);
+            res.send({});
         }).catch((error) => {
             console.error('Failed to create a new record : ', error);
-            res.send(`ERROR`);
+            res.json({});
         });
     })
 
